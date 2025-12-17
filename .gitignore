@@ -1,0 +1,38 @@
+# CDK
+cdk.out/
+lib/
+
+# TypeScript
+*.js
+*.d.ts
+*.js.map
+!jest.config.js
+
+# Node
+node_modules/
+
+# Python (legacy)
+*.pyc
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# AWS
+.aws-sam/
+

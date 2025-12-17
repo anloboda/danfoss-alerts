@@ -1,0 +1,28 @@
+{
+  "name": "danfoss-alerts",
+  "version": "1.0.0",
+  "description": "Danfoss Floor Temperature Monitoring Service",
+  "main": "lib/app.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "cdk": "cdk",
+    "deploy": "cdk deploy",
+    "synth": "cdk synth"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "aws-cdk": "^2.120.0",
+    "typescript": "^5.3.0",
+    "ts-node": "^10.9.0",
+    "source-map-support": "^0.5.21"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.120.0",
+    "constructs": "^10.0.0"
+  }
+}
+
