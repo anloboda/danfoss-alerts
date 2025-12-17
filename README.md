@@ -1,20 +1,25 @@
 # Danfoss Floor Temperature Monitoring Service
 
-Serverless AWS service for monitoring Danfoss floor heating temperature and sending email alerts when temperature exceeds 27°C.
+Serverless AWS service for monitoring Danfoss floor heating temperature and sending email and Telegram alerts when temperature exceeds 27°C.
 
 ## Architecture
 
 - **AWS Lambda** (Node.js 20) functions:
   - Token Rotation: Refreshes OAuth2 access token every 55 minutes
-  - Temperature Check: Monitors floor temperature every 10 minutes and sends alerts
+  - Temperature Check: Monitors floor temperature every 30 minutes and sends alerts
 
 - **AWS Systems Manager Parameter Store**:
   - `/DanfossAlertsStack/danfoss-credentials`: Stores Consumer Key and Secret (static, encrypted)
   - `/DanfossAlertsStack/danfoss-access-token`: Stores OAuth2 access token (rotated, encrypted)
+  - `/DanfossAlertsStack/notification-emails`: Stores email addresses for notifications (encrypted)
+  - `/DanfossAlertsStack/telegram-bot-token`: Stores Telegram bot token (encrypted)
+  - `/DanfossAlertsStack/telegram-chat-ids`: Stores Telegram chat IDs (encrypted)
 
 - **Amazon EventBridge**: Scheduled triggers for Lambda functions
 
 - **Amazon SES**: Email notifications
+
+- **Telegram Bot API**: Telegram notifications (optional)
 
 ## Prerequisites
 
@@ -80,25 +85,7 @@ Or use AWS Console:
 3. Click "Edit"
 4. Update with your credentials (paste JSON)
 
-#### b) Notification Emails Parameter
-
-Set the email addresses for notifications:
-
-```bash
-aws ssm put-parameter \
-  --name /DanfossAlertsStack/notification-emails \
-  --value "email1@example.com,email2@example.com" \
-  --type SecureString \
-  --overwrite
-```
-
-Or use AWS Console:
-1. Go to AWS Systems Manager → **Parameter Store**
-2. Find parameter: `/DanfossAlertsStack/notification-emails`
-3. Click "Edit"
-4. Update with comma-separated email addresses
-
-#### c) Initialize Access Token Parameter
+#### b) Initialize Access Token Parameter
 
 The access token parameter will be populated automatically by the rotation function, but you can trigger it manually:
 
@@ -115,7 +102,7 @@ Before emails can be sent, you need to verify recipient emails in SES:
 1. Go to AWS SES Console → **Verified identities**
 2. Click **Create identity**
 3. Choose **Email address**
-4. Enter email address (e.g., `email1@example.com`)
+4. Enter email address (e.g., `your-email@example.com`)
 5. Click **Create identity**
 6. Check your email inbox and click the verification link
 7. Repeat for the second email address
@@ -132,8 +119,9 @@ Before emails can be sent, you need to verify recipient emails in SES:
 2. **Temperature Check** (every 30 minutes):
    - Lambda function reads access token from parameter
    - Calls Danfoss API: `GET https://api.danfoss.com/ally/devices`
+   - Filters out bathroom devices ("Ванна кімната")
    - Checks `MeasuredValue` for each device (value = temperature * 10, so 270 = 27.0°C)
-   - If any device temperature > 27°C (270), sends email alert
+   - If any device temperature > 27°C (270), sends email and Telegram alerts
 
 ## Development
 
@@ -178,11 +166,11 @@ TEMPERATURE_THRESHOLD: "270", // Change to desired value (e.g., "280" for 28°C)
 
 ### Check Frequency
 
-Default: Every 10 minutes
+Default: Every 30 minutes
 
 To change, update schedule in `lib/danfoss-alerts-stack.ts`:
 ```typescript
-schedule: events.Schedule.rate(cdk.Duration.minutes(10)), // Change as needed
+schedule: events.Schedule.rate(cdk.Duration.minutes(30)), // Change as needed
 ```
 
 ### Token Rotation Frequency
@@ -217,7 +205,7 @@ View logs in CloudWatch:
 ### "Unauthorized" errors in Temperature Check
 
 - Check if token rotation is working
-- Verify credentials secret is populated correctly
+- Verify credentials parameter is populated correctly
 - Check CloudWatch logs for token rotation function
 
 ### Emails not being sent
