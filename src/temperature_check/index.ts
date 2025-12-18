@@ -1,4 +1,4 @@
-import { DanfossApi } from "./services/danfoss/danfoss-api";
+import { DanfossApi } from "../common-lib/danfoss/danfoss-api";
 import { EmailNotifier } from "./services/email/email-notifier";
 import { TelegramNotifier } from "./services/telegram/telegram-notifier";
 import { TemperatureChecker } from "./services/temperature/temperature-checker";

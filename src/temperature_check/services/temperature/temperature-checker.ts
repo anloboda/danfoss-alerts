@@ -1,4 +1,4 @@
-import { Device, DeviceAboveThreshold } from "../danfoss/danfoss-api";
+import { Device, DeviceAboveThreshold } from "../../../common-lib/danfoss/danfoss-api";
 
 export class TemperatureChecker {
   checkTemperatures(

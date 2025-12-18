@@ -1,4 +1,4 @@
-import { SSMHelper } from "../../utils/ssm-helper";
+import { SSMHelper } from "../../temperature_check/utils/ssm-helper";
 
 export interface DeviceStatus {
   code: string;

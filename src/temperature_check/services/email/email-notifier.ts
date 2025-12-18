@@ -2,7 +2,7 @@ import {
   SESClient,
   SendEmailCommand,
 } from "@aws-sdk/client-ses";
-import { DeviceAboveThreshold } from "../danfoss/danfoss-api";
+import { DeviceAboveThreshold } from "../../../common-lib/danfoss/danfoss-api";
 import { SSMHelper } from "../../utils/ssm-helper";
 import {
   buildEmailSubject,
