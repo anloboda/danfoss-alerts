@@ -23,9 +23,11 @@ interface TokenResponse {
   expires_in?: number;
 }
 
+import { getEnvVarOrThrow } from "../temperature_check/utils/env-helper";
+
 export const handler = async (event: any, context: any) => {
-  const credentialsParamName = process.env.CREDENTIALS_PARAM_NAME!;
-  const accessTokenParamName = process.env.ACCESS_TOKEN_PARAM_NAME!;
+  const credentialsParamName = getEnvVarOrThrow("CREDENTIALS_PARAM_NAME");
+  const accessTokenParamName = getEnvVarOrThrow("ACCESS_TOKEN_PARAM_NAME");
 
   try {
     // Get credentials from parameter
